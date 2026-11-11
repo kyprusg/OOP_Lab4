@@ -140,4 +140,28 @@ namespace OOP_Lab4_VisualEditor
         protected abstract void DrawShape(Graphics g);
         public abstract bool Contains(int px, int py);
     }
+
+    //=======================================================================================================
+    // прямоугольник
+    public class RectangleShape : Shape
+    {
+        public RectangleShape(int x, int y, int width, int height, Color color)
+            : base(x, y, width, height, color)
+        {
+        }
+
+        protected override void DrawShape(Graphics g)
+        {
+            SolidBrush brush = new SolidBrush(GetColor());
+            Pen borderPen = new Pen(Color.Black, 2);
+
+            g.FillRectangle(brush, GetLeft(), GetTop(), GetWidth(), GetHeight());
+            g.DrawRectangle(borderPen, GetLeft(), GetTop(), GetWidth(), GetHeight());
+        }
+
+        public override bool Contains(int px, int py)
+        {
+            return (px >= GetLeft() && px <= GetRight() && py >= GetTop() && py <= GetBottom());
+        }
+    }
 }
