@@ -142,7 +142,7 @@ namespace OOP_Lab4_VisualEditor
     }
 
     //=======================================================================================================
-    // прямоугольник
+    // прямоугольник и квадрат
     public class RectangleShape : Shape
     {
         public RectangleShape(int x, int y, int width, int height, Color color)
@@ -164,4 +164,28 @@ namespace OOP_Lab4_VisualEditor
             return (px >= GetLeft() && px <= GetRight() && py >= GetTop() && py <= GetBottom());
         }
     }
+
+  
+    public class SquareShape : RectangleShape
+    {
+        public SquareShape(int x, int y, int size, Color color)
+            : base(x, y, size, size, color)
+        {
+        }
+        public override bool Resize(int dw, int dh, int maxWidth, int maxHeight)
+        {
+            int delta;
+            if (dw != 0)
+            {
+                delta = dw;
+            }
+            else
+            {
+                delta = dh;
+            }
+
+            return base.Resize(delta, delta, maxWidth, maxHeight);
+        }
+    }
+  
 }
