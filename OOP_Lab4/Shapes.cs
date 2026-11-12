@@ -187,5 +187,166 @@ namespace OOP_Lab4_VisualEditor
             return base.Resize(delta, delta, maxWidth, maxHeight);
         }
     }
-  
+    //=========================================================================================================
+    // эллипс и круг
+    public class EllipseShape : Shape
+    {
+        public EllipseShape(int x, int y, int width, int height, Color color)
+            : base(x, y, width, height, color)
+        {
+        }
+
+        protected override void DrawShape(Graphics g)
+        {
+            SolidBrush brush = new SolidBrush(GetColor());
+            Pen borderPen = new Pen(Color.Black, 2);
+
+            g.FillEllipse(brush, GetLeft(), GetTop(), GetWidth(), GetHeight());
+            g.DrawEllipse(borderPen, GetLeft(), GetTop(), GetWidth(), GetHeight());
+        }
+
+        public override bool Contains(int px, int py)
+        {
+            double rx = GetWidth() / 2.0;
+            double ry = GetHeight() / 2.0;
+            if (rx <= 0 || ry <= 0) return false;
+
+            double dx = px - GetX();
+            double dy = py - GetY();
+            return ((dx * dx) / (rx * rx) + (dy * dy) / (ry * ry)) <= 1.0;
+        }
+    }
+
+    public class CircleShape : EllipseShape
+    {
+        public CircleShape(int x, int y, int diameter, Color color)
+            : base(x, y, diameter, diameter, color)
+        {
+        }
+
+        public override bool Resize(int dw, int dh, int maxWidth, int maxHeight)
+        {
+            int delta;
+            if (dw != 0)
+            {
+                delta = dw;
+            }
+            else
+            {
+                delta = dh;
+            }
+
+            return base.Resize(delta, delta, maxWidth, maxHeight);
+        }
+    }
+    //======================================================================================
+    // треугольник
+    public class TriangleShape : Shape
+    {
+        public TriangleShape(int x, int y, int width, int height, Color color)
+            : base(x, y, width, height, color)
+        {
+        }
+
+        protected override void DrawShape(Graphics g)
+        {
+            Point[] vertices = new Point[3]; 
+            vertices[0] = new Point(GetX(), GetTop());       
+            vertices[1] = new Point(GetLeft(), GetBottom()); 
+            vertices[2] = new Point(GetRight(), GetBottom());
+
+            SolidBrush brush = new SolidBrush(GetColor());
+            Pen borderPen = new Pen(Color.Black, 2);
+
+            g.FillPolygon(brush, vertices);
+            g.DrawPolygon(borderPen, vertices);
+        }
+
+        public override bool Contains(int px, int py)
+        {
+            Point p = new Point(px, py);
+            Point v0 = new Point(GetX(), GetTop());
+            Point v1 = new Point(GetLeft(), GetBottom());
+            Point v2 = new Point(GetRight(), GetBottom());
+
+            float d1 = Sign(p, v0, v1);
+            float d2 = Sign(p, v1, v2);
+            float d3 = Sign(p, v2, v0);
+
+            bool hasNeg = (d1 < 0) || (d2 < 0) || (d3 < 0);
+            bool hasPos = (d1 > 0) || (d2 > 0) || (d3 > 0);
+
+            return !(hasNeg && hasPos);
+        }
+
+        private float Sign(Point p1, Point p2, Point p3)
+        {
+            return (p1.X - p3.X) * (p2.Y - p3.Y) - (p2.X - p3.X) * (p1.Y - p3.Y);
+        }
+    }
+
+    // =========================================================================
+    // отрезок
+    public class LineShape : Shape
+    {
+        public LineShape(int x, int y, int width, int height, Color color)
+            : base(x, y, width, height, color)
+        {
+        }
+
+        protected override void DrawShape(Graphics g)
+        {
+            Pen linePen = new Pen(GetColor(), 4);
+            g.DrawLine(linePen, GetLeft(), GetTop(), GetRight(), GetBottom());
+        }
+
+        public override bool Contains(int px, int py)
+        {
+            double x1 = GetLeft();
+            double y1 = GetTop();
+            double x2 = GetRight();
+            double y2 = GetBottom();
+
+            double A = px - x1;
+            double B = py - y1;
+            double C = x2 - x1;
+            double D = y2 - y1;
+
+            double dot = A * C + B * D;
+            double lenSq = C * C + D * D;
+
+            double param;
+            if (lenSq != 0)
+            {
+                param = dot / lenSq;
+            }
+            else
+            {
+                param = -1;
+            }
+
+            double xx, yy;
+            if (param < 0)
+            {
+                xx = x1;
+                yy = y1;
+            }
+            else if (param > 1)
+            {
+                xx = x2;
+                yy = y2;
+            }
+            else
+            {
+                xx = x1 + param * C;
+                yy = y1 + param * D;
+            }
+
+            double dx = px - xx;
+            double dy = py - yy;
+            double distance = Math.Sqrt(dx * dx + dy * dy);
+
+            return distance <= 7.0;
+        }
+    }
 }
