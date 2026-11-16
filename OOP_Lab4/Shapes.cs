@@ -165,7 +165,7 @@ namespace OOP_Lab4_VisualEditor
         }
     }
 
-  
+
     public class SquareShape : RectangleShape
     {
         public SquareShape(int x, int y, int size, Color color)
@@ -250,9 +250,9 @@ namespace OOP_Lab4_VisualEditor
 
         protected override void DrawShape(Graphics g)
         {
-            Point[] vertices = new Point[3]; 
-            vertices[0] = new Point(GetX(), GetTop());       
-            vertices[1] = new Point(GetLeft(), GetBottom()); 
+            Point[] vertices = new Point[3];
+            vertices[0] = new Point(GetX(), GetTop());
+            vertices[1] = new Point(GetLeft(), GetBottom());
             vertices[2] = new Point(GetRight(), GetBottom());
 
             SolidBrush brush = new SolidBrush(GetColor());
